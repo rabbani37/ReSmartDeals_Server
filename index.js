@@ -50,8 +50,26 @@ async function run() {
         });
         app.get("/products/:id", async (req, res) => {
             const id = req.params.id;
-            const quary = { _id: new ObjectId(id) }
-            const result = await productCollection.findOne(quary);
+            const quary = { _id: new ObjectId(id) };
+            const options = {};
+            const result = await productCollection.findOne(quary, options);
+            res.send(result)
+        });
+        app.patch("/products/:id", async (req, res) => {
+            const id = req.params.id;
+            const quary = { _id: new ObjectId(id) };
+            const updateProduct = req.body;
+            const options = {};
+            const updated = {
+                $set: {
+                    name: updateProduct.name,
+                    brand: updateProduct.brand,
+                    price: updateProduct.price,
+                    category: updateProduct.category,
+                    stock: updateProduct.stock,
+                }
+            };
+            const result = await productCollection.updateOne(quary, updated, options)
             res.send(result)
         });
         app.delete("/products/:id", async (req, res) => {
