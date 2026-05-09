@@ -51,9 +51,14 @@ async function run() {
         app.get("/products/:id", async (req, res) => {
             const id = req.params.id;
             const quary = { _id: new ObjectId(id) }
-            const options = {};
-            const result = await productCollection.findOne(quary, options);
+            const result = await productCollection.findOne(quary);
             res.send(result)
+        });
+        app.delete("/products/:id", async (req, res) => {
+            const id = req.params.id;
+            const quary = { _id: new ObjectId(id) };
+            const result = await productCollection.deleteOne(quary);
+            res.send(result);
         })
 
 
