@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const port = process.env.PORT || 4000;
+const { constants } = require('node:buffer');
+const port = process.env.PORT || 3000;
 const app = express();
 require('dotenv').config();
 
@@ -38,13 +39,15 @@ async function run() {
 
 
         // ----PRODUCT API----
-        app.post("/products", async (req, res) => {
-            const productss = req.body;
-            const resutl = await productCollection.insertOne(productss);
-            res.send(resutl)
-        });
+
         app.get("/products", async (req, res) => {
-            const curser = productCollection.find()
+            const email = req.query.email;
+            const quary = {};
+            if (quary) {
+                quary.email = email
+            }
+            console.log(quary);
+            const curser = productCollection.find(quary)
             const result = await curser.toArray()
             res.send(result)
         });
@@ -55,6 +58,11 @@ async function run() {
             const result = await productCollection.findOne(quary, options);
             res.send(result)
         });
+        app.post("/products", async (req, res) => {
+            const productss = req.body;
+            const resutl = await productCollection.insertOne(productss);
+            res.send(resutl)
+        });
         app.patch("/products/:id", async (req, res) => {
             const id = req.params.id;
             const quary = { _id: new ObjectId(id) };
@@ -62,11 +70,21 @@ async function run() {
             const options = {};
             const updated = {
                 $set: {
-                    name: updateProduct.name,
-                    brand: updateProduct.brand,
-                    price: updateProduct.price,
+                    title: updateProduct.title,
+                    price_min: updateProduct.price_min,
+                    price_max: updateProduct.price_max,
+                    email: updateProduct.email,
                     category: updateProduct.category,
-                    stock: updateProduct.stock,
+                    created_at: updateProduct.created_at,
+                    image: updateProduct.image,
+                    status: updateProduct.status,
+                    location: updateProduct.location,
+                    seller_image: updateProduct.seller_image,
+                    seller_name: updateProduct.seller_name,
+                    condition: updateProduct.condition,
+                    usage: updateProduct.usage,
+                    description: updateProduct.description,
+                    seller_contact: updateProduct.seller_contact,
                 }
             };
             const result = await productCollection.updateOne(quary, updated, options)
