@@ -35,10 +35,18 @@ async function run() {
         const smartDB = client.db("ReSmartDB");
         const productCollection = smartDB.collection("products")
 
+
+
+        // ----PRODUCT API----
         app.post("/products", async (req, res) => {
             const productss = req.body;
             const resutl = await productCollection.insertOne(productss);
             res.send(resutl)
+        });
+        app.get("/products", async (req, res) => {
+            const curser = productCollection.find()
+            const result = await curser.toArray()
+            res.send(result)
         })
 
 
